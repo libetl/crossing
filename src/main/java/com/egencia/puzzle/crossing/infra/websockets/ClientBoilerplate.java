@@ -22,9 +22,12 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+import static java.util.Arrays.stream;
 import static java.util.Collections.singletonList;
 
 public class ClientBoilerplate {
+    private static final Wait whichWait = stream(Thread.currentThread().getStackTrace())
+            .anyMatch(st->st.getClassName().startsWith("org.junit")) ? new FakeWait() : new RealWait();
 
     private static void subscribe(StompSession session, String route, Class<?> expectedClass, Consumer<?> consumer){
         Consumer<Object> castConsumer = (Consumer<Object>) consumer;
@@ -103,6 +106,24 @@ public class ClientBoilerplate {
 
     }
 
+    static interface Wait {
+        void sleep(int ms);
+    }
+
+    static class RealWait implements Wait {
+        public void sleep(int ms){
+            try {
+                Thread.sleep(ms);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    static class FakeWait implements Wait {
+        public void sleep(int ms){}
+    }
+
     public static void waitRandomTime() {
         final Random random = new Random();
         float waitDuration = random.nextFloat() * 15000;
@@ -110,18 +131,13 @@ public class ClientBoilerplate {
     }
 
     public static void waitMs(int num){
-        try {
-            Thread.sleep(num);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        whichWait.sleep(num);
     }
 
     public static Car randomCar(Side from){
-        Random random = new Random();
         return new Car(UUID.randomUUID(),
-                from != null ? from : Side.values()[random.nextInt(Side.values().length)],
-                DrivingBehavior.values()[random.nextInt(DrivingBehavior.values().length)]);
+                from != null ? from : Side.randomBetween4Sides(),
+                DrivingBehavior.values()[new Random().nextInt(DrivingBehavior.values().length)]);
     }
 
     public synchronized static void sendMessage(StompSession session, String url, Object payload) {

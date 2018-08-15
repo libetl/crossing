@@ -41,11 +41,11 @@ public class CarInjector {
         new Scanner(System.in).nextLine();
     }
 
-    private static void receiveTraffic(Traffic traffic) {
+    static void receiveTraffic(Traffic traffic) {
         updatedTraffic.set(traffic);
     }
 
-    private static void receiveTrafficLights(TrafficLightsUpdate trafficLightsUpdate) {
+    static void receiveTrafficLights(TrafficLightsUpdate trafficLightsUpdate) {
         updatedTrafficLights.set(trafficLightsUpdate);
     }
 
@@ -58,11 +58,11 @@ public class CarInjector {
         }
     }
 
-    private static void drive(StompSession session, Car car){
+    static void drive(StompSession session, Car car){
         Car updatedCar = car;
         Side direction = car.getCameFrom().opposite();
 
-        while (!direction.wasReached(updatedCar.getSituation().getPosition())){
+        while (!direction.wasReached(updatedCar.getSituation().getPosition(), direction)){
             waitMs(100);
             updatedCar = updatedCar.movingForward(direction, updatedTraffic.get(), updatedTrafficLights.get());
             sendMessage(session, "/app/moveCar",

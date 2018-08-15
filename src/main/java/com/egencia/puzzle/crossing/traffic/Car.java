@@ -6,7 +6,10 @@ import com.egencia.puzzle.crossing.trafficlights.TrafficLightsUpdate;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Objects;
 import java.util.UUID;
+
+import static com.egencia.puzzle.crossing.traffic.Camera.nextObstacleForward;
 
 public class Car {
 
@@ -20,7 +23,7 @@ public class Car {
                @JsonProperty("cameFrom") Side cameFrom,
                @JsonProperty("behavior") DrivingBehavior behavior) {
         this(carId, cameFrom, behavior,
-                new Situation(cameFrom.initialPosition(), 0, 0));
+                new Situation(cameFrom.initialPosition(), behavior.getMaxSpeed() - 10, 0));
     }
 
     private Car(UUID carId, Side cameFrom, DrivingBehavior behavior, Situation situation) {
@@ -60,7 +63,22 @@ public class Car {
                 '}';
     }
 
-    public Car movingForward(Side direction, Traffic otherPeople, TrafficLightsUpdate trafficLights) {
-        return this.with(this.situation.movingForward(direction, this.getBehavior()));
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Car car = (Car) o;
+        return Objects.equals(carId, car.carId);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(carId);
+    }
+
+    public Car movingForward(Side direction, Traffic otherPeople, TrafficLightsUpdate trafficLights) {
+        Situation until = nextObstacleForward(this, otherPeople, trafficLights);
+        return this.with(this.situation.movingForward(direction, this.getBehavior(), until));
+    }
+
 }
