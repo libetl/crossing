@@ -53,7 +53,7 @@ public class Situation {
         float nextObstacleDistance = nextObstacle.getPosition().distanceFrom(this.position) + behavior.getDistanceWithNextObstacle();
         int iterationsBeforeNextObstacle = (int)Math.floor(nextObstacleDistance / speed);
         boolean shouldDecideToBrake = iterationsBeforeSpeedAdaptation > iterationsBeforeNextObstacle + 1;
-        int nextWillDecideToBrake = nextObstacleDistance < 10 && speed < 10 ? YES_NOW  :
+        int nextWillDecideToBrake = nextObstacleDistance < 10 && speed - nextObstacle.speed < 10 ? YES_NOW  :
                 willDecideToBrake == NO && shouldDecideToBrake ?  YES :
                 shouldDecideToBrake ? Math.max(willDecideToBrake - 1, NOW) : NO;
         float nextAcceleration = willDecideToBrake == NOW ? -ACCELERATION_AMPLITUDE :

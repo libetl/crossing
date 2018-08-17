@@ -75,24 +75,24 @@ crossing.position.z = 7
 scene.add(crossing)
 
 const trafficLight1 = new THREE.ObjectLoader().parse(trafficLight3DObject)
-trafficLight1.position.x = -20
-trafficLight1.position.z = -20
+trafficLight1.position.x = -10
+trafficLight1.position.z = -10
 scene.add(trafficLight1)
 
 const trafficLight2 = new THREE.ObjectLoader().parse(trafficLight3DObject)
 trafficLight2.position.x = 20
-trafficLight2.position.z = -20
+trafficLight2.position.z = -10
 trafficLight2.rotation.y = 4.71
 scene.add(trafficLight2)
 
 const trafficLight3 = new THREE.ObjectLoader().parse(trafficLight3DObject)
-trafficLight3.position.x = 20
+trafficLight3.position.x = 15
 trafficLight3.position.z = 20
 trafficLight3.rotation.y = 3.14
 scene.add(trafficLight3)
 
 const trafficLight4 = new THREE.ObjectLoader().parse(trafficLight3DObject)
-trafficLight4.position.x = -20
+trafficLight4.position.x = -10
 trafficLight4.position.z = 20
 trafficLight4.rotation.y = -4.71
 scene.add(trafficLight4)

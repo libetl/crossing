@@ -126,7 +126,7 @@ public class ClientBoilerplate {
 
     public static void waitRandomTime() {
         final Random random = new Random();
-        float waitDuration = random.nextFloat() * 15000;
+        float waitDuration = random.nextFloat() * 5000;
         waitMs((int) waitDuration);
     }
 
