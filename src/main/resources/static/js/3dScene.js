@@ -134,7 +134,7 @@ const Traffic3DSubscriber = class Traffic3DSubscriber {
                 new THREE.ObjectLoader().parse(car3DObject)
             carInstance.name = car.carId
             carInstance.position.x = car.situation.position.x
-            carInstance.position.y = 2.6
+            carInstance.position.y = 4.0
             carInstance.position.z = car.situation.position.y
             carInstance.rotation.y =
                 car.cameFrom === 'N' ? 3.14 :

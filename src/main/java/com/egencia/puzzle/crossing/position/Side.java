@@ -7,7 +7,7 @@ import static java.util.Arrays.asList;
 public enum Side {
     N, NW, W, SW, S, SE, E, NE;
 
-    static float INITIAL_DISTANCE = 300;
+    static float INITIAL_DISTANCE = 900;
 
     public static Side randomBetween4Sides(){
         return asList(N, S, E, W).get(new Random().nextInt(4));
