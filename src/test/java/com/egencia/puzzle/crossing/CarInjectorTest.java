@@ -5,11 +5,14 @@ import com.egencia.puzzle.crossing.traffic.Car;
 import com.egencia.puzzle.crossing.traffic.MoveCarData;
 import com.egencia.puzzle.crossing.traffic.RemoveCarData;
 import com.egencia.puzzle.crossing.traffic.Situation;
+import com.egencia.puzzle.crossing.traffic.Traffic;
 import com.egencia.puzzle.crossing.trafficlights.TrafficLightsUpdate;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.messaging.simp.stomp.StompSession;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static com.egencia.puzzle.crossing.position.Side.*;
@@ -132,5 +135,58 @@ public class CarInjectorTest {
         }
 
         assertThat(updatedSituation.getPosition()).isEqualTo(new Position(-300.80923f, 300.80923f));
+    }
+
+    @Test
+    public void suicidalCarShouldNotOverlapTheCalmCar(){
+        Car calmCar = new Car(UUID.randomUUID(), SE, CALM);
+        Car suicidalCar = new Car(UUID.randomUUID(), SE, SUICIDAL);
+
+        List<Car> savedCars = new ArrayList<>(2);
+        savedCars.add(calmCar);
+        savedCars.add(suicidalCar);
+        CarInjector.receiveTraffic(new Traffic(savedCars));
+        UUID[] firstCarIdToReachTheEnd = {null};
+        StompSession session = mock(StompSession.class);
+        when(session.send(eq("/app/moveCar"), any())).then(invocation -> {
+            MoveCarData moveCarData = (MoveCarData)invocation.getArgument(1);
+            String car = moveCarData.getCarId() == calmCar.getCarId() ?
+                    "calmCar    " : "suicidalCar";
+            if ("calmCar    ".equals(car)){
+                savedCars.set(0, calmCar.with(moveCarData.getNewSituation()));
+            }else{
+                savedCars.set(1, suicidalCar.with(moveCarData.getNewSituation()));
+            }
+            System.out.println(car + " = " + ((MoveCarData)invocation.getArgument(1)).getNewSituation().getPosition());
+            return mock(StompSession.Receiptable.class);});
+        when(session.send(eq("/app/removeCar"), any())).then(invocation -> {
+            if (firstCarIdToReachTheEnd[0] == null){
+                firstCarIdToReachTheEnd[0] = ((RemoveCarData)invocation.getArguments()[1]).getCarId();
+            }
+            return mock(StompSession.Receiptable.class);});
+
+        Thread t1 = new Thread(() -> CarInjector.drive(session, calmCar));
+        Thread t2 = new Thread(() -> CarInjector.drive(session, suicidalCar));
+        t1.start();
+
+        try {
+            Thread.sleep(2500);
+        } catch (InterruptedException e) {
+            throw new AssertionError("should not fail");
+        }
+
+        t2.start();
+
+        while(firstCarIdToReachTheEnd[0] == null){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new AssertionError("should not fail");
+            }
+        }
+
+        t1.interrupt();
+        t2.interrupt();
+        assertThat(firstCarIdToReachTheEnd[0]).isEqualTo(calmCar.getCarId());
     }
 }

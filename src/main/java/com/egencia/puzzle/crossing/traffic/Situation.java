@@ -56,7 +56,7 @@ public class Situation {
         int nextWillDecideToBrake = nextObstacleDistance < 10 && speed - nextObstacle.speed < 10 ? YES_NOW  :
                 willDecideToBrake == NO && shouldDecideToBrake ?  YES :
                 shouldDecideToBrake ? Math.max(willDecideToBrake - 1, NOW) : NO;
-        float nextAcceleration = willDecideToBrake == NOW ? -ACCELERATION_AMPLITUDE :
+        float nextAcceleration = willDecideToBrake == NOW || nextWillDecideToBrake == YES_NOW ? -ACCELERATION_AMPLITUDE :
                 speed < behavior.getMaxSpeed() ? ACCELERATION_AMPLITUDE : 0;
         float nextSpeed = Math.max(0, speed + nextAcceleration);
         Position vector = direction.asVector();

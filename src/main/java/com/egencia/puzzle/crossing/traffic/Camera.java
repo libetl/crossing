@@ -14,14 +14,10 @@ public class Camera {
         Position pointOfView = car.getSituation().getPosition();
         Position finalPosition = direction.initialPosition();
         Situation finalSituation = new Situation(finalPosition, 50, 0);
-        Position initialPosition = from.initialPosition();
-        float coeffY = (finalPosition.getY() - initialPosition.getY()) / (Math.abs(finalPosition.getY()) + Math.abs(finalPosition.getX()));
-        float coeffX = (finalPosition.getY() - initialPosition.getY()) / (Math.abs(finalPosition.getY()) + Math.abs(finalPosition.getX()));
-        Predicate<Position> isInTheWay = position -> coeffX * position.getX() == position.getY() && coeffY * position.getY() == position.getX();
         final Situation nearestCarSituation = otherPeople.getCars().stream()
                 .filter(theCar -> !theCar.equals(car))
+                .filter(theCar -> theCar.getCameFrom() == car.getCameFrom())
                 .map(Car::getSituation)
-                .filter(carSituation -> isInTheWay.test(carSituation.getPosition()))
                 .filter(carSituation -> carSituation.getPosition().isFurtherThan(pointOfView, direction))
                 .sorted((s1, s2) -> (s2.getPosition().isFurtherThan(s1.getPosition(), direction) ? 1 :
                         s1.getPosition().isFurtherThan(s2.getPosition(), direction) ? -1 : 0))
