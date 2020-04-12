@@ -1,9 +1,9 @@
-package com.egencia.puzzle.crossing;
+package com.egencia.puzzle.crossing.infra.client;
 
 import com.egencia.puzzle.crossing.trafficlights.TrafficLightsUpdate;
 
 public class TrafficLightsClientHacker {
     public static void hackState(TrafficLightsUpdate update) {
-        CarInjector.receiveTrafficLights(update);
+        Connector.receiveTrafficLights(update);
     }
 }

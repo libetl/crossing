@@ -1,5 +1,7 @@
 package com.egencia.puzzle.crossing;
 
+import com.egencia.puzzle.crossing.infra.client.Driver;
+import com.egencia.puzzle.crossing.infra.client.TrafficLightsClientHacker;
 import com.egencia.puzzle.crossing.position.Position;
 import com.egencia.puzzle.crossing.traffic.Car;
 import com.egencia.puzzle.crossing.traffic.MoveCarData;
@@ -20,6 +22,7 @@ import static com.egencia.puzzle.crossing.traffic.DrivingBehavior.CALM;
 import static com.egencia.puzzle.crossing.traffic.DrivingBehavior.SUICIDAL;
 import static com.egencia.puzzle.crossing.trafficlights.TrafficLightsUpdate.Status.GREEN;
 import static com.egencia.puzzle.crossing.trafficlights.TrafficLightsUpdate.Status.RED;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,7 +32,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class CarInjectorTest {
+public class DriverTest {
 
     private Situation updatedSituation = null;
     private boolean hasEnded = false;
@@ -45,7 +48,7 @@ public class CarInjectorTest {
         Car car = new Car(UUID.randomUUID(), SW, CALM);
         StompSession session = mock(StompSession.class);
 
-        CarInjector.drive(session, car);
+        new Driver().drive(session, car);
 
         verify(session, times(282)).send(eq("/app/moveCar"), any(MoveCarData.class));
         verify(session).send(eq("/app/removeCar"), any(RemoveCarData.class));
@@ -56,7 +59,7 @@ public class CarInjectorTest {
         Car car = new Car(UUID.randomUUID(), E, SUICIDAL);
         StompSession session = mock(StompSession.class);
 
-        CarInjector.drive(session, car);
+        new Driver().drive(session, car);
 
         assertThat(car.getSituation().getPosition()).isEqualTo(new Position(300, 0));
     }
@@ -66,7 +69,7 @@ public class CarInjectorTest {
         Car car = new Car(UUID.randomUUID(), SE, SUICIDAL);
         StompSession session = mock(StompSession.class);
 
-        CarInjector.drive(session, car);
+        new Driver().drive(session, car);
 
         assertThat(car.getSituation().getPosition()).isEqualTo(new Position(300, -300));
     }
@@ -76,9 +79,9 @@ public class CarInjectorTest {
         Car car = new Car(UUID.randomUUID(), SE, CALM);
         StompSession session = mock(StompSession.class);
         TrafficLightsClientHacker.hackState(new TrafficLightsUpdate(
-                singletonList(new TrafficLightsUpdate.TrafficLightNewStatus(1, SE, GREEN))));
+                singletonList(new TrafficLightsUpdate.TrafficLightNewStatus( SE, GREEN))));
 
-        CarInjector.drive(session, car);
+        new Driver().drive(session, car);
 
         assertThat(car.getSituation().getPosition()).isEqualTo(new Position(300, -300));
     }
@@ -94,9 +97,9 @@ public class CarInjectorTest {
             hasEnded = true;
             return mock(StompSession.Receiptable.class);});
         TrafficLightsClientHacker.hackState(new TrafficLightsUpdate(
-                singletonList(new TrafficLightsUpdate.TrafficLightNewStatus(1, SE, RED))));
+                singletonList(new TrafficLightsUpdate.TrafficLightNewStatus(SE, RED))));
 
-        Thread t = new Thread(() -> CarInjector.drive(session, car));
+        Thread t = new Thread(() -> new Driver().drive(session, car));
         t.start();
 
         while(updatedSituation == null || updatedSituation.getSpeed() > 0){
@@ -123,7 +126,7 @@ public class CarInjectorTest {
             hasEnded = true;
             return mock(StompSession.Receiptable.class);});
 
-        Thread t = new Thread(() -> CarInjector.drive(session, car));
+        Thread t = new Thread(() -> new Driver().drive(session, car));
         t.start();
 
         while(!hasEnded){
@@ -142,14 +145,12 @@ public class CarInjectorTest {
         Car calmCar = new Car(UUID.randomUUID(), SE, CALM);
         Car suicidalCar = new Car(UUID.randomUUID(), SE, SUICIDAL);
 
-        List<Car> savedCars = new ArrayList<>(2);
-        savedCars.add(calmCar);
-        savedCars.add(suicidalCar);
-        CarInjector.receiveTraffic(new Traffic(savedCars));
+        List<Car> savedCars = new ArrayList<>(asList(calmCar, suicidalCar));
+        new Driver(new Traffic(savedCars), new TrafficLightsUpdate(new ArrayList<>()));
         UUID[] firstCarIdToReachTheEnd = {null};
         StompSession session = mock(StompSession.class);
         when(session.send(eq("/app/moveCar"), any())).then(invocation -> {
-            MoveCarData moveCarData = (MoveCarData)invocation.getArgument(1);
+            MoveCarData moveCarData = invocation.getArgument(1);
             String car = moveCarData.getCarId() == calmCar.getCarId() ?
                     "calmCar    " : "suicidalCar";
             if ("calmCar    ".equals(car)){
@@ -165,8 +166,8 @@ public class CarInjectorTest {
             }
             return mock(StompSession.Receiptable.class);});
 
-        Thread t1 = new Thread(() -> CarInjector.drive(session, calmCar));
-        Thread t2 = new Thread(() -> CarInjector.drive(session, suicidalCar));
+        Thread t1 = new Thread(() -> new Driver().drive(session, calmCar));
+        Thread t2 = new Thread(() -> new Driver().drive(session, suicidalCar));
         t1.start();
 
         try {

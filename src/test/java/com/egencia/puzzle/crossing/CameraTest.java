@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CameraTest {
 
@@ -30,5 +31,24 @@ public class CameraTest {
         TrafficLightsUpdate trafficLights = new TrafficLightsUpdate(Collections.emptyList());
 
         Situation nearestCarSituation = Camera.nextObstacleForward(north1, updatedTraffic, trafficLights);
+
+        assertThat(nearestCarSituation).isEqualTo(north2.getSituation());
+    }
+
+    @Test
+    public void test_south_direction(){
+        Car north1 = new Car(UUID.randomUUID(), Side.S, DrivingBehavior.CALM)
+                .with(new Situation(new Position(0, 750), 1, 1));
+        Car north2 = new Car(UUID.randomUUID(), Side.S, DrivingBehavior.CALM)
+                .with(new Situation(new Position(0, 450), 1, 1));
+        Car north3 = new Car(UUID.randomUUID(), Side.S, DrivingBehavior.CALM)
+                .with(new Situation(new Position(0, 250), 1, 1));
+
+        Traffic updatedTraffic = new Traffic(asList(north1, north2, north3));
+        TrafficLightsUpdate trafficLights = new TrafficLightsUpdate(Collections.emptyList());
+
+        Situation nearestCarSituation = Camera.nextObstacleForward(north1, updatedTraffic, trafficLights);
+
+        assertThat(nearestCarSituation).isEqualTo(north2.getSituation());
     }
 }

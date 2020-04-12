@@ -122,7 +122,7 @@ function render() {
     renderer.render( scene, camera )
 }
 
-const Traffic3DSubscriber = class Traffic3DSubscriber {
+const TrafficSubscriber = class TrafficSubscriber {
     constructor(){
         this.cars = []
     }
@@ -133,9 +133,17 @@ const Traffic3DSubscriber = class Traffic3DSubscriber {
             const carInstance = existingCar ||
                 new THREE.ObjectLoader().parse(car3DObject)
             carInstance.name = car.carId
-            carInstance.position.x = car.situation.position.x
-            carInstance.position.y = 4.0
-            carInstance.position.z = car.situation.position.y
+            carInstance.position.x =
+                car.situation.position.x === 0 &&
+                car.cameFrom === 'N' ? 8 :
+                    car.situation.position.x === 0 &&
+                    car.cameFrom === 'S' ? -3 : car.situation.position.x
+            carInstance.position.y = 5.0
+            carInstance.position.z =
+                car.situation.position.y === 0 &&
+                car.cameFrom === 'E' ? 0.5 :
+                    car.situation.position.y === 0 &&
+                    car.cameFrom === 'W' ? 10 : car.situation.position.y
             carInstance.rotation.y =
                 car.cameFrom === 'N' ? 3.14 :
                     car.cameFrom === 'E' ? 4.71 :
@@ -151,7 +159,7 @@ const Traffic3DSubscriber = class Traffic3DSubscriber {
     }
 }
 
-const TrafficLights3DSubscriber = class TrafficLights3DSubscriber {
+const TrafficLightsSubscriber = class TrafficLightsSubscriber {
     constructor(){
         this.trafficLights = []
     }

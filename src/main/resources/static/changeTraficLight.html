@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crossing - Change trafic Lights</title>
+    <link rel="stylesheet" href="css/jsonViewer.css">
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/js/pubsub.js" defer="defer"></script>
+    <script src="/js/dataUpdater.js" defer="defer"></script>
+    <script src="/js/changeTraficLight.js"></script>
+    <script src="/js/listeners.js"></script>
+</head>
+<body style="background-color: black; color: white">
+<fieldset>
+    <div>
+        <p>Current status :</p>
+        <div id="currentStatus"></div>
+    </div>
+    <div>
+        <p>Trafic light :</p>
+        <input type="radio" id="east" name="side" value="E" checked="checked"/>
+        <label for="east">East</label>
+        <input type="radio" id="north" name="side" value="N"/>
+        <label for="north">North</label>
+        <input type="radio" id="south" name="side" value="S"/>
+        <label for="south">South</label>
+        <input type="radio" id="west" name="side" value="W"/>
+        <label for="west">West</label>
+    </div>
+    <div>
+        <p>New status :</p>
+        <label for="newStatus">New Status</label>
+        <select name="newStatus" id="newStatus">
+            <option value="GREEN" selected="selected">Green</option>
+            <option value="ORANGE">Orange</option>
+            <option value="RED">Red</option>
+        </select>
+    </div>
+    <div>
+        <p>Submit :</p>
+        <button id="changeTraficLight">Change traffic light</button>
+    </div>
+</fieldset>
+</body>
+</html>

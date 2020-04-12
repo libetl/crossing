@@ -134,9 +134,9 @@ public class ClientBoilerplate {
         whichWait.sleep(num);
     }
 
-    public static Car randomCar(Side from){
+    public static Car randomCar(){
         return new Car(UUID.randomUUID(),
-                from != null ? from : Side.randomBetween4Sides(),
+                Side.randomBetween4Sides(),
                 DrivingBehavior.values()[new Random().nextInt(DrivingBehavior.values().length)]);
     }
 

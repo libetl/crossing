@@ -13,7 +13,6 @@ public class Situation {
     private final Position position;
     private final float speed;
     private final float acceleration;
-    private static final float ACCELERATION_AMPLITUDE = 0.9f;
     private final int willDecideToBrake;
     private static final int NO = -1;
     private static final int NOW = 0;
@@ -49,21 +48,26 @@ public class Situation {
     }
 
     public Situation movingForward(Side direction, DrivingBehavior behavior, Situation nextObstacle) {
-        int iterationsBeforeSpeedAdaptation = (int)Math.ceil(Math.sqrt((2 * (speed-nextObstacle.speed)) / Math.pow(ACCELERATION_AMPLITUDE, 2)));
-        float nextObstacleDistance = nextObstacle.getPosition().distanceFrom(this.position) + behavior.getDistanceWithNextObstacle();
-        int iterationsBeforeNextObstacle = (int)Math.floor(nextObstacleDistance / speed);
+        int iterationsBeforeSpeedAdaptation = speed == 0 ? 1 :
+                (int)Math.ceil(Math.sqrt((2 * (speed-nextObstacle.speed)) /
+                Math.pow(behavior.getAccelerationAmplitude(), 2)));
+        float nextObstacleDistance = nextObstacle.getPosition().distanceFrom(this.position) - behavior.getDistanceWithNextObstacle();
+        int iterationsBeforeNextObstacle = speed == 0 ? 50 : (int)Math.floor(nextObstacleDistance / speed);
         boolean shouldDecideToBrake = iterationsBeforeSpeedAdaptation > iterationsBeforeNextObstacle + 1;
         int nextWillDecideToBrake = nextObstacleDistance < 10 && speed - nextObstacle.speed < 10 ? YES_NOW  :
                 willDecideToBrake == NO && shouldDecideToBrake ?  YES :
                 shouldDecideToBrake ? Math.max(willDecideToBrake - 1, NOW) : NO;
-        float nextAcceleration = willDecideToBrake == NOW || nextWillDecideToBrake == YES_NOW ? -ACCELERATION_AMPLITUDE :
-                speed < behavior.getMaxSpeed() ? ACCELERATION_AMPLITUDE : 0;
+        float nextAcceleration = willDecideToBrake == NOW || nextWillDecideToBrake == YES_NOW ?
+                -behavior.getAccelerationAmplitude() :
+                nextObstacleDistance < 10 ? behavior.getAccelerationAmplitude() / 2 :
+                speed < behavior.getMaxSpeed() ? behavior.getAccelerationAmplitude() : 0;
         float nextSpeed = Math.max(0, speed + nextAcceleration);
         Position vector = direction.asVector();
         boolean diagonal = Math.abs(vector.getX()) + Math.abs(vector.getY()) == 2;
         final float coeff = (nextSpeed < 1E-3 ? 0 : nextSpeed) / 10;
-        final float deltaX = (float) (diagonal ? Math.sqrt(coeff) : coeff) * vector.getX();
-        final float deltaY = (float) (diagonal ? Math.sqrt(coeff) : coeff) * vector.getY();
+        double speed = diagonal ? Math.sqrt(coeff) : coeff;
+        final float deltaX = (float) speed * vector.getX();
+        final float deltaY = (float) speed * vector.getY();
         return new Situation(
                 new Position(this.getPosition().getX() + deltaX, this.getPosition().getY() + deltaY),
                 nextSpeed, nextAcceleration, nextWillDecideToBrake);

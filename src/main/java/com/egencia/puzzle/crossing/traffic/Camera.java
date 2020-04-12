@@ -19,8 +19,8 @@ public class Camera {
                 .filter(theCar -> theCar.getCameFrom() == car.getCameFrom())
                 .map(Car::getSituation)
                 .filter(carSituation -> carSituation.getPosition().isFurtherThan(pointOfView, direction))
-                .sorted((s1, s2) -> (s2.getPosition().isFurtherThan(s1.getPosition(), direction) ? 1 :
-                        s1.getPosition().isFurtherThan(s2.getPosition(), direction) ? -1 : 0))
+                .sorted((s1, s2) -> (s2.getPosition().isFurtherThan(s1.getPosition(), direction) ? -1 :
+                        s1.getPosition().isFurtherThan(s2.getPosition(), direction) ? 1 : 0))
                 .findFirst().orElse(finalSituation);
         final Position trafficLightPosition = trafficLights.getNewStatuses().stream()
                 .filter(status -> car.getBehavior().brakingFor(status.getNewStatus()))

@@ -22,18 +22,14 @@ public class TrafficLightsUpdate {
         return newStatuses;
     }
 
-    public static final TrafficLightNewStatus NONE = new TrafficLightNewStatus(-1, null, null);
     public static class TrafficLightNewStatus {
 
-        private final int trafficLightId;
         private final Side side;
         private final Status newStatus;
 
         @JsonCreator
-        public TrafficLightNewStatus(@JsonProperty("trafficLightId") int trafficLightId,
-                                     @JsonProperty("side") Side side,
+        public TrafficLightNewStatus(@JsonProperty("side") Side side,
                                      @JsonProperty("newStatus") Status newStatus) {
-            this.trafficLightId = trafficLightId;
             this.side = side;
             this.newStatus = newStatus;
         }
@@ -44,10 +40,6 @@ public class TrafficLightsUpdate {
 
         public Position getPosition (){
             return side.asVector(10);
-        }
-
-        public int getTrafficLightId() {
-            return trafficLightId;
         }
 
         public Status getNewStatus() {

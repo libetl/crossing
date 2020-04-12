@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    subscribe(new Traffic3DSubscriber())
-    subscribe(new TrafficLights3DSubscriber())
+    subscribe(new TrafficSubscriber())
+    subscribe(new TrafficLightsSubscriber())
     connect().then(getTrafficLights).then(getTraffic)
 })

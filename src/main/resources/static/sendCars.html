@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crossing - Send New Cars</title>
+    <link rel="stylesheet" href="css/jsonViewer.css">
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/js/sendCar.js"></script>
+</head>
+<body style="background-color: black; color: white">
+<fieldset>
+    <div>
+        <p>Coming from :</p>
+        <input type="radio" id="comingFromEast" name="comingFrom" value="E" checked="checked"/>
+        <label for="comingFromEast">East</label>
+        <input type="radio" id="comingFromNorth" name="comingFrom" value="N"/>
+        <label for="comingFromNorth">North</label>
+        <input type="radio" id="comingFromSouth" name="comingFrom" value="S"/>
+        <label for="comingFromSouth">South</label>
+        <input type="radio" id="comingFromWest" name="comingFrom" value="W"/>
+        <label for="comingFromWest">West</label>
+    </div>
+    <div>
+        <p>Behavior :</p>
+        <label for="behavior">Driver behavior</label>
+        <select name="behavior" id="behavior">
+            <option value="CALM" selected="selected">Calm</option>
+            <option value="AGGRESSIVE">Aggressive</option>
+            <option value="SUICIDAL">Suicidal</option>
+        </select>
+    </div>
+    <div>
+        <p>Submit :</p>
+        <button id="sendNewCar">Send new car</button>
+    </div>
+</fieldset>
+</body>
+</html>
