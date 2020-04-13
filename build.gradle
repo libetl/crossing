@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '2.1.0.M1'
+		springBootVersion = '2.2.6.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -35,8 +35,8 @@ dependencies {
     testCompile('org.mockito:mockito-core')
     compile("org.springframework.boot:spring-boot-starter-websocket")
     compile("org.webjars:webjars-locator-core")
-    compile("org.webjars:sockjs-client:1.0.2")
-    compile("org.webjars:stomp-websocket:2.3.3")
+    compile("org.webjars:sockjs-client:1.1.2")
+    compile("org.webjars:stomp-websocket:2.3.3-1")
     compile("org.webjars:three.js:r88")
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
