@@ -12,7 +12,7 @@ class State {
     static AtomicInteger TRAFFIC_LIGHTS_TOTAL = new AtomicInteger(4);
     static AtomicReference<TrafficLightsUpdate> LAST_UPDATE = new AtomicReference<>(
             new TrafficLightsUpdate(IntStream.range(0, TRAFFIC_LIGHTS_TOTAL.get())
-                    .boxed().map(i ->
+                    .mapToObj(i ->
                             new TrafficLightsUpdate.TrafficLightNewStatus(
                                     Side.values()[(int)(i * 1.0 / TRAFFIC_LIGHTS_TOTAL.get() * Side.values().length)], GREEN))
                     .collect(toList())));

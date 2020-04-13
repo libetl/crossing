@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="crossing" type="CompoundRunConfigurationType">
+    <toRun name="TraficLightsSystem" type="Application" />
+    <toRun name="TrafficLightsServerApplication" type="SpringBootApplicationConfigurationType" />
+    <toRun name="Injector" type="Application" />
+    <method v="2" />
+  </configuration>
+</component>

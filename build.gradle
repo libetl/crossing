@@ -38,6 +38,7 @@ dependencies {
     compile("org.webjars:sockjs-client:1.1.2")
     compile("org.webjars:stomp-websocket:2.3.3-1")
     compile("org.webjars:three.js:r88")
+	compile("org.springframework.retry:spring-retry:1.2.5.RELEASE")
 
-    testCompile("org.springframework.boot:spring-boot-starter-test")
+	testCompile("org.springframework.boot:spring-boot-starter-test")
 }

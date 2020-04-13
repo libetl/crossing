@@ -13,5 +13,12 @@ public class TrafficLightsController {
         return State.LAST_UPDATE.get();
     }
 
+    @MessageMapping("/setTrafficLights")
+    @SendTo("/topics/trafficLights")
+    public TrafficLightsUpdate setTrafficLights(TrafficLightsUpdate update) {
+        State.LAST_UPDATE.set(update);
+        return update;
+    }
+
 
 }
