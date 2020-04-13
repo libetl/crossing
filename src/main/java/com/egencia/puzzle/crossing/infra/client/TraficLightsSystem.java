@@ -5,10 +5,7 @@ import com.egencia.puzzle.crossing.trafficlights.TrafficLightsUpdate;
 import com.egencia.puzzle.crossing.trafficlights.TrafficLightsUpdate.TrafficLightNewStatus;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.retry.RetryCallback;
-import org.springframework.retry.RetryContext;
-import org.springframework.retry.backoff.BackOffContext;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
-import org.springframework.retry.backoff.ExponentialRandomBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
 import java.util.Scanner;
