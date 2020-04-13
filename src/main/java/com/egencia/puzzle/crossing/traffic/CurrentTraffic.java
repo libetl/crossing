@@ -34,4 +34,8 @@ class CurrentTraffic {
             TRAFFIC.get().remove(removeCarData.getCarId());
         }
     }
+
+    public static void clear() {
+        TRAFFIC.get().clear();
+    }
 }

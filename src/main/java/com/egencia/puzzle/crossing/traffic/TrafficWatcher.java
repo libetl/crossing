@@ -34,4 +34,10 @@ public class TrafficWatcher {
         return CurrentTraffic.getTraffic();
     }
 
+    @MessageMapping("/clearTrafic")
+    @SendTo("/topics/currentTraffic")
+    public Traffic clearTrafic() {
+        CurrentTraffic.clear();
+        return CurrentTraffic.getTraffic();
+    }
 }
