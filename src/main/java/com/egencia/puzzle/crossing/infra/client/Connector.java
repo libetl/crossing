@@ -24,7 +24,7 @@ public class Connector {
     private static final AtomicReference<TrafficLightsUpdate> updatedTrafficLights = new AtomicReference<>(new TrafficLightsUpdate(emptyList()));
     private static final Driver driver = new Driver(updatedTraffic, updatedTrafficLights);
 
-    public static void main(String[] args) {
+    public static void connector(boolean interactive) {
         CarSender carSender = new CarSender();
         RetryTemplate retryTemplate = new RetryTemplate();
         ExponentialBackOffPolicy policy = new ExponentialBackOffPolicy();
@@ -34,19 +34,19 @@ public class Connector {
         retryTemplate.execute((RetryCallback<Void, IllegalStateException>) (context) -> {
             try {
                 ClientBoilerplate.connectTo("ws://localhost:8080/websock-js",
-                        args.length > 0 && args[0].equals("interactive") ?
+                        interactive ?
                                 carSender::setSession : session -> CarInjector.inject(session, driver),
                         new HashMap<String, Consumer<?>>() {{
                             this.put("/topics/currentTraffic", traffic -> receiveTraffic((Traffic) traffic));
                             this.put("/topics/trafficLights", trafficLights -> receiveTrafficLights((TrafficLightsUpdate) trafficLights));
-                            if (args.length > 0 && args[0].equals("interactive")) {
+                            if (interactive) {
                                 this.put("/topics/sendCar", car -> carSender.inject(driver, (Car) car));
                             }
                         }},
                         new HashMap<String, Class<?>>() {{
                             this.put("/topics/currentTraffic", Traffic.class);
                             this.put("/topics/trafficLights", TrafficLightsUpdate.class);
-                            if (args.length > 0 && args[0].equals("interactive"))
+                            if (interactive)
                                 this.put("/topics/sendCar", Car.class);
                         }});
                 return null;

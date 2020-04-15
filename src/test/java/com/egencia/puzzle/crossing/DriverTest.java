@@ -9,6 +9,7 @@ import com.egencia.puzzle.crossing.traffic.RemoveCarData;
 import com.egencia.puzzle.crossing.traffic.Situation;
 import com.egencia.puzzle.crossing.traffic.Traffic;
 import com.egencia.puzzle.crossing.trafficlights.TrafficLightsUpdate;
+import com.egencia.puzzle.crossing.trafficlights.TrafficLightsUpdate.TrafficLightNewStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -23,6 +24,7 @@ import static com.egencia.puzzle.crossing.traffic.DrivingBehavior.SUICIDAL;
 import static com.egencia.puzzle.crossing.trafficlights.TrafficLightsUpdate.Status.GREEN;
 import static com.egencia.puzzle.crossing.trafficlights.TrafficLightsUpdate.Status.RED;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +52,7 @@ public class DriverTest {
 
         new Driver().drive(session, car);
 
-        verify(session, times(282)).send(eq("/app/moveCar"), any(MoveCarData.class));
+        verify(session, times(843)).send(eq("/app/moveCar"), any(MoveCarData.class));
         verify(session).send(eq("/app/removeCar"), any(RemoveCarData.class));
     }
 
@@ -61,7 +63,7 @@ public class DriverTest {
 
         new Driver().drive(session, car);
 
-        assertThat(car.getSituation().getPosition()).isEqualTo(new Position(300, 0));
+        assertThat(car.getSituation().getPosition()).isEqualTo(new Position(900, 0));
     }
 
     @Test
@@ -71,7 +73,7 @@ public class DriverTest {
 
         new Driver().drive(session, car);
 
-        assertThat(car.getSituation().getPosition()).isEqualTo(new Position(300, -300));
+        assertThat(car.getSituation().getPosition()).isEqualTo(new Position(900, -900));
     }
 
     @Test
@@ -79,11 +81,11 @@ public class DriverTest {
         Car car = new Car(UUID.randomUUID(), SE, CALM);
         StompSession session = mock(StompSession.class);
         TrafficLightsClientHacker.hackState(new TrafficLightsUpdate(
-                singletonList(new TrafficLightsUpdate.TrafficLightNewStatus( SE, GREEN))));
+                singletonList(new TrafficLightNewStatus( SE, GREEN))));
 
         new Driver().drive(session, car);
 
-        assertThat(car.getSituation().getPosition()).isEqualTo(new Position(300, -300));
+        assertThat(car.getSituation().getPosition()).isEqualTo(new Position(900, -900));
     }
 
     @Test
@@ -97,9 +99,12 @@ public class DriverTest {
             hasEnded = true;
             return mock(StompSession.Receiptable.class);});
         TrafficLightsClientHacker.hackState(new TrafficLightsUpdate(
-                singletonList(new TrafficLightsUpdate.TrafficLightNewStatus(SE, RED))));
+                singletonList(new TrafficLightNewStatus(SE, RED))));
+        Driver driver = new Driver(new Traffic(emptyList()),
+                new TrafficLightsUpdate(singletonList(
+                        new TrafficLightNewStatus(SE, RED))));
 
-        Thread t = new Thread(() -> new Driver().drive(session, car));
+        Thread t = new Thread(() -> driver.drive(session, car));
         t.start();
 
         while(updatedSituation == null || updatedSituation.getSpeed() > 0){
@@ -112,7 +117,7 @@ public class DriverTest {
 
         t.interrupt();
 
-        assertThat(updatedSituation.getPosition()).isEqualTo(new Position(14.36793f, -14.36793f));
+        assertThat(updatedSituation.getPosition()).isEqualTo(new Position(19.614916f, -19.614916f));
     }
 
     @Test
@@ -137,7 +142,7 @@ public class DriverTest {
             }
         }
 
-        assertThat(updatedSituation.getPosition()).isEqualTo(new Position(-300.80923f, 300.80923f));
+        assertThat(updatedSituation.getPosition()).isEqualTo(new Position(-900.3216f, 900.3216f));
     }
 
     @Test

@@ -18,7 +18,7 @@ import static com.egencia.puzzle.crossing.trafficlights.TrafficLightsUpdate.Stat
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
 
-public class ClearTrafic {
+public class ClearTraffic {
 
     public static void main(String[] args) {
         RetryTemplate retryTemplate = new RetryTemplate();
@@ -30,7 +30,7 @@ public class ClearTrafic {
             try {
                 ClientBoilerplate.connectTo("ws://localhost:8080/websock-js",
                         session ->
-                                sendMessage(session, "/app/clearTrafic", null),
+                                sendMessage(session, "/app/clearTraffic", null),
                         emptyMap(),
                         emptyMap());
                 return null;

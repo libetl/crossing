@@ -18,7 +18,7 @@ import static com.egencia.puzzle.crossing.trafficlights.TrafficLightsUpdate.Stat
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
 
-public class TraficLightsSystem {
+public class TrafficLightsSystem {
 
     public static void main(String[] args) {
         RetryTemplate retryTemplate = new RetryTemplate();
@@ -29,7 +29,7 @@ public class TraficLightsSystem {
         retryTemplate.execute((RetryCallback<Void, IllegalStateException>) (context) -> {
             try {
                 ClientBoilerplate.connectTo("ws://localhost:8080/websock-js",
-                        TraficLightsSystem::manageTraficLights,
+                        TrafficLightsSystem::manageTrafficLights,
                         emptyMap(),
                         emptyMap());
                 return null;
@@ -40,7 +40,7 @@ public class TraficLightsSystem {
         new Scanner(System.in).nextLine();
     }
 
-    private static void manageTraficLights(StompSession session) {
+    private static void manageTrafficLights(StompSession session) {
         while (true) {
             sendMessage(session, "/app/setTrafficLights",
                     new TrafficLightsUpdate(

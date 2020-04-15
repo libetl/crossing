@@ -1,6 +1,5 @@
 package com.egencia.puzzle.crossing.traffic;
 
-import com.egencia.puzzle.crossing.position.Position;
 import com.egencia.puzzle.crossing.position.Side;
 import com.egencia.puzzle.crossing.trafficlights.TrafficLightsUpdate;
 import com.fasterxml.jackson.annotation.JsonCreator;

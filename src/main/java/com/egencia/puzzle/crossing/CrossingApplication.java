@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TrafficLightsServerApplication {
+public class CrossingApplication {
     public static void main(String[] args) {
-        SpringApplication.run(TrafficLightsServerApplication.class, args);
+        SpringApplication.run(CrossingApplication.class, args);
     }
 }

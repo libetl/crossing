@@ -7,6 +7,10 @@ import static com.egencia.puzzle.crossing.infra.websockets.ClientBoilerplate.*;
 
 public class CarInjector {
 
+    public static void main(String[] args) {
+        Connector.connector(false);
+    }
+
     public static void inject(StompSession session, Driver driver) {
         while(true) {
             waitRandomTime();

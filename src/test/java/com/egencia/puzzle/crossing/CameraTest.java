@@ -19,12 +19,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CameraTest {
 
     @Test
-    public void test_north_direction(){
-        Car north1 = new Car(UUID.randomUUID(), Side.N, DrivingBehavior.CALM)
+    public void test_south_direction(){
+        Car north1 = new Car(UUID.randomUUID(), Side.S, DrivingBehavior.CALM)
                 .with(new Situation(new Position(0, -750), 1, 1));
-        Car north2 = new Car(UUID.randomUUID(), Side.N, DrivingBehavior.CALM)
+        Car north2 = new Car(UUID.randomUUID(), Side.S, DrivingBehavior.CALM)
                 .with(new Situation(new Position(0, -450), 1, 1));
-        Car north3 = new Car(UUID.randomUUID(), Side.N, DrivingBehavior.CALM)
+        Car north3 = new Car(UUID.randomUUID(), Side.S, DrivingBehavior.CALM)
                 .with(new Situation(new Position(0, -250), 1, 1));
 
         Traffic updatedTraffic = new Traffic(asList(north1, north2, north3));
@@ -36,12 +36,12 @@ public class CameraTest {
     }
 
     @Test
-    public void test_south_direction(){
-        Car north1 = new Car(UUID.randomUUID(), Side.S, DrivingBehavior.CALM)
+    public void test_north_direction(){
+        Car north1 = new Car(UUID.randomUUID(), Side.N, DrivingBehavior.CALM)
                 .with(new Situation(new Position(0, 750), 1, 1));
-        Car north2 = new Car(UUID.randomUUID(), Side.S, DrivingBehavior.CALM)
+        Car north2 = new Car(UUID.randomUUID(), Side.N, DrivingBehavior.CALM)
                 .with(new Situation(new Position(0, 450), 1, 1));
-        Car north3 = new Car(UUID.randomUUID(), Side.S, DrivingBehavior.CALM)
+        Car north3 = new Car(UUID.randomUUID(), Side.N, DrivingBehavior.CALM)
                 .with(new Situation(new Position(0, 250), 1, 1));
 
         Traffic updatedTraffic = new Traffic(asList(north1, north2, north3));

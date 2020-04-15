@@ -8,7 +8,12 @@ import static com.egencia.puzzle.crossing.infra.websockets.ClientBoilerplate.sen
 public class CarSender {
     private StompSession session;
 
-    public CarSender() {
+    public static void main(String[] args) {
+        Connector.connector(true);
+    }
+
+    public CarSender(){
+
     }
 
     public CarSender(StompSession stompSession) {

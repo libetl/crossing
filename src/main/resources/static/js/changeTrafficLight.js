@@ -1,6 +1,6 @@
 let currentStatus = []
 
-const changeTraficLight = ({side, newStatus}) => stompClient.send('/topics/trafficLights', {},
+const changeTrafficLight = ({side, newStatus}) => stompClient.send('/topics/trafficLights', {},
     JSON.stringify({newStatuses: [...currentStatus.filter(traficLight => traficLight.side !== side), {side, newStatus}]}))
 
 const TrafficSubscriber = class TrafficSubscriber {
@@ -20,8 +20,8 @@ const TrafficLightsSubscriber = class TrafficLightsSubscriber {
 }
 
 setTimeout(() =>
-    document.querySelector('#changeTraficLight').addEventListener('click', (e) => {
-        changeTraficLight({side: document.querySelector('input[name="side"]:checked').value,
+    document.querySelector('#changeTrafficLight').addEventListener('click', (e) => {
+        changeTrafficLight({side: document.querySelector('input[name="side"]:checked').value,
         newStatus: document.querySelector('select[name="newStatus"]').value})
         e.preventDefault()
         return false
