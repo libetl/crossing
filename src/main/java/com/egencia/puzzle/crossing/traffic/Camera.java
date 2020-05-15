@@ -4,8 +4,6 @@ import com.egencia.puzzle.crossing.position.Position;
 import com.egencia.puzzle.crossing.position.Side;
 import com.egencia.puzzle.crossing.trafficlights.TrafficLightsUpdate;
 
-import java.util.function.Predicate;
-
 public class Camera {
 
     public static Situation nextObstacleForward(Car car, Traffic otherPeople, TrafficLightsUpdate trafficLights) {
@@ -18,16 +16,14 @@ public class Camera {
                 .filter(theCar -> !theCar.equals(car))
                 .filter(theCar -> theCar.getCameFrom() == car.getCameFrom())
                 .map(Car::getSituation)
-                .filter(carSituation -> carSituation.getPosition().isFurtherThan(pointOfView, direction))
-                .sorted((s1, s2) -> (s2.getPosition().isFurtherThan(s1.getPosition(), direction) ? -1 :
-                        s1.getPosition().isFurtherThan(s2.getPosition(), direction) ? 1 : 0))
-                .findFirst().orElse(finalSituation);
+                .filter(carSituation -> carSituation.getPosition().isFurtherThan(pointOfView, direction)).min((s1, s2) -> (s2.getPosition().isFurtherThan(s1.getPosition(), direction) ? -1 :
+                        s1.getPosition().isFurtherThan(s2.getPosition(), direction) ? 1 : 0)).orElse(finalSituation);
         final Position trafficLightPosition = trafficLights.getNewStatuses().stream()
                 .filter(status -> car.getBehavior().brakingFor(status.getNewStatus()))
                 .filter(status -> status.getSide() == from).findFirst()
                 .map(TrafficLightsUpdate.TrafficLightNewStatus::getSide).map(side -> side.asVector(10))
                 .filter(itsPosition -> itsPosition.isFurtherThan(pointOfView, direction))
-                .orElse(finalPosition);
+                .orElse(nearestCarSituation.getPosition());
         return nearestCarSituation.getPosition().isFurtherThan(trafficLightPosition, direction) ?
                 new Situation(trafficLightPosition, 0, 0) :
                 nearestCarSituation;

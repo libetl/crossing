@@ -20,6 +20,10 @@ public enum Side {
                         (p.getX() < 0 ? "W" : ""));
     }
 
+    public static boolean isEdge(float value) {
+        return Math.abs(value) == INITIAL_DISTANCE;
+    }
+
     public Position initialPosition () {
         final float x = this.name().contains("E") ? INITIAL_DISTANCE :
                         this.name().contains("W") ? -INITIAL_DISTANCE : 0;

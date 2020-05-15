@@ -39,6 +39,10 @@ public class Situation {
         return position;
     }
 
+    public boolean atTheEdge() {
+        return Side.isEdge(position.getX()) || Side.isEdge(position.getY());
+    }
+
     public float getSpeed() {
         return speed;
     }
@@ -54,7 +58,9 @@ public class Situation {
         float nextObstacleDistance = nextObstacle.getPosition().distanceFrom(this.position) - behavior.getDistanceWithNextObstacle();
         int iterationsBeforeNextObstacle = speed == 0 ? 50 : (int)Math.floor(nextObstacleDistance / speed);
         boolean shouldDecideToBrake = iterationsBeforeSpeedAdaptation > iterationsBeforeNextObstacle + 1;
-        int nextWillDecideToBrake = nextObstacleDistance < 10 && speed - nextObstacle.speed < 10 ? YES_NOW  :
+        int nextWillDecideToBrake =
+                nextObstacleDistance < 1 && nextObstacle.atTheEdge() ? NO :
+                nextObstacleDistance < 10 && speed - nextObstacle.speed < 10 ? YES_NOW  :
                 willDecideToBrake == NO && shouldDecideToBrake ?  YES :
                 shouldDecideToBrake ? Math.max(willDecideToBrake - 1, NOW) : NO;
         float nextAcceleration = willDecideToBrake == NOW || nextWillDecideToBrake == YES_NOW ?
