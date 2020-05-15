@@ -15,6 +15,8 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
+import javax.websocket.ContainerProvider;
+import javax.websocket.WebSocketContainer;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Random;
@@ -48,12 +50,14 @@ public class ClientBoilerplate {
                                  Map<String, Consumer<?>> consumers,
                                  Map<String, Class<?>> expectedClasses) throws ExecutionException, InterruptedException {
 
-        WebSocketClient simpleWebSocketClient = new StandardWebSocketClient();
+        WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
+        webSocketContainer.setDefaultMaxTextMessageBufferSize(
+                webSocketContainer.getDefaultMaxBinaryMessageBufferSize() * 32);
+        WebSocketClient simpleWebSocketClient = new StandardWebSocketClient(webSocketContainer);
         SockJsClient sockJsClient = new SockJsClient(singletonList(new WebSocketTransport(simpleWebSocketClient)));
 
         WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
         stompClient.connect(url, new StompSessionHandler() {
             @Override
             public void afterConnected(StompSession session, StompHeaders connectedHeaders) {

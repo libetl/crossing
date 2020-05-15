@@ -73,4 +73,13 @@ public class Situation {
                 nextSpeed, nextAcceleration, nextWillDecideToBrake);
     }
 
+    @Override
+    public String toString() {
+        return "Situation{" +
+                "position=" + position +
+                ", speed=" + speed +
+                ", acceleration=" + acceleration +
+                ", willDecideToBrake=" + willDecideToBrake +
+                '}';
+    }
 }
